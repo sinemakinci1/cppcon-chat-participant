@@ -139,8 +139,9 @@ export function activate(context: vscode.ExtensionContext) {
         
         //Structure the schedule to send to the model
         const messages = [
-            new vscode.LanguageModelChatMessage(vscode.LanguageModelChatMessageRole.User, 'You must query the schedule provided and give a response according to the user query. The schedule info is provided below'),
-            new vscode.LanguageModelChatMessage(vscode.LanguageModelChatMessageRole.User, scheduleInfo)
+            new vscode.LanguageModelChatMessage(vscode.LanguageModelChatMessageRole.User, 'You must look through the schedule provided and give a response according to what the user is asking for. Please aggregate the data, and notice that each day has a separate list of talks below each day market. The schedule info is provided below'),
+            new vscode.LanguageModelChatMessage(vscode.LanguageModelChatMessageRole.User, scheduleInfo),
+            new vscode.LanguageModelChatMessage(vscode.LanguageModelChatMessageRole.User, 'I want to learn more about the CppCon talks. I want to know what talks are at which times and what talks on specific topics I request.')
         ]
         // Get the response from the model
         const chatRequest = await model.sendRequest(messages, {}, token);
