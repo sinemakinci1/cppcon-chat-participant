@@ -10,15 +10,15 @@ interface ICppConChatResult extends vscode.ChatResult {
     }
 }
 
+const MODEL_SELECTOR: vscode.LanguageModelChatSelector = { vendor: 'copilot', family: 'gpt-4o' };
+
 export function activate(context: vscode.ExtensionContext) {
     // Register a chat participant that can respond to user queries
     const cppconParticipant = vscode.chat.createChatParticipant(CPPCON_PARTICIPANT_ID, async (request, context, response, token) => {
         const userQuery = request.prompt;
 
-        // Use gpt-4 since it is high quality. gpt-3.5-turbo and gpt-4 are also available
-        const lm = await vscode.lm.selectChatModels({ 'vendor': 'copilot', 'version': 'gpt-4' });
-
-        if (!lm) {
+        const [model] = await vscode.lm.selectChatModels(MODEL_SELECTOR);
+        if (!model) {
             response.markdown('Sorry I couldn\'t complete the request.');
             return;
         }
@@ -143,7 +143,7 @@ export function activate(context: vscode.ExtensionContext) {
             new vscode.LanguageModelChatMessage(vscode.LanguageModelChatMessageRole.User, scheduleInfo)
         ]
         // Get the response from the model
-        const chatRequest = await lm[0].sendRequest(messages, {}, token);
+        const chatRequest = await model.sendRequest(messages, {}, token);
 
         for await (const fragment of chatRequest.text) {
             response.markdown(fragment);
