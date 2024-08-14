@@ -16,7 +16,7 @@ export function activate(context: vscode.ExtensionContext) {
         const userQuery = request.prompt;
 
         // Use gpt-4 since it is high quality. gpt-3.5-turbo and gpt-4 are also available
-        const lm = await vscode.lm.selectChatModels({ 'vendor': 'copilot', 'family': 'gpt-4' });
+        const lm = await vscode.lm.selectChatModels({ 'vendor': 'copilot', 'version': 'gpt-4' });
 
         if (!lm) {
             response.markdown('Sorry I couldn\'t complete the request.');
@@ -142,9 +142,13 @@ export function activate(context: vscode.ExtensionContext) {
             new vscode.LanguageModelChatMessage(vscode.LanguageModelChatMessageRole.User, 'You must query the schedule provided and give a response according to the user query. The schedule info is provided below'),
             new vscode.LanguageModelChatMessage(vscode.LanguageModelChatMessageRole.User, scheduleInfo)
         ]
-        //Get the response from the model and output to the user : THIS IS WHAT ISNT WORKING
+        // Get the response from the model
         const chatRequest = await lm[0].sendRequest(messages, {}, token);
-        response.markdown(String(chatRequest.text));
+
+        for await (const fragment of chatRequest.text) {
+            response.markdown(fragment);
+        }
+
     }
 
     else {
