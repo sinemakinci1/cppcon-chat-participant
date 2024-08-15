@@ -46,7 +46,7 @@ export function activate(context: vscode.ExtensionContext) {
                 - 16:45 - Work Contracts – Rethinking Task Based Concurrency and Parallelism for Low Latency C++ by Michael Maniscalco
                 - 16:45 - Data Is All You Need for Fusion by Manya Bansal
                 - 16:45 - How Meta Made Debugging Async Code Easier with Coroutines and Senders by Ian Petersen • Jessica Wong
-             - **Day 2**
+            - **Day 2**
                 - 09:00 - Reflection based libraries to look forward to by Saksham Sharma
                 - 09:00 - Back to Basics: Function Call Resolution by Ben Saks
                 - 9:00 - Multi Producer, Multi Consumer, Lock Free, Atomic Queue - User API and Implementation by Erez Strauss
@@ -139,9 +139,10 @@ export function activate(context: vscode.ExtensionContext) {
         
         //Structure the schedule to send to the model
         const messages = [
-            new vscode.LanguageModelChatMessage(vscode.LanguageModelChatMessageRole.User, 'You must look through the schedule provided and give a response according to what the user is asking for. Please aggregate the data, and notice that each day has a separate list of talks below each day market. The schedule info is provided below'),
+            new vscode.LanguageModelChatMessage(vscode.LanguageModelChatMessageRole.User, 'You must look through the schedule provided and give a response according to what the user is asking for. Please search through the schedule data and provide the relevant talks for the question I ask. Please notice that each day has a separate list of talks below each day market. The schedule info is provided below'),
             new vscode.LanguageModelChatMessage(vscode.LanguageModelChatMessageRole.User, scheduleInfo),
-            new vscode.LanguageModelChatMessage(vscode.LanguageModelChatMessageRole.User, 'I want to learn more about the CppCon talks. I want to know what talks are at which times and what talks on specific topics I request.')
+            new vscode.LanguageModelChatMessage(vscode.LanguageModelChatMessageRole.User, 'I want to learn more about the CppCon talks. Answer my question normally like a chat agent, but use the schedule info above where applicable to answer it. If i request cppcon talks at a given time, give me the CppCon schedule for the times. If I ask for talks on a subject, give me a list of talks on that subject.'),
+            new vscode.LanguageModelChatMessage(vscode.LanguageModelChatMessageRole.User, userQuery)
         ]
         // Get the response from the model
         const chatRequest = await model.sendRequest(messages, {}, token);
